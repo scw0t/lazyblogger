@@ -1,4 +1,3 @@
-
 package lazyblogger;
 
 import com.google.api.client.auth.oauth2.Credential;
@@ -14,31 +13,25 @@ import java.io.IOException;
 import java.util.List;
 
 public class ExecutePost {
+
     private final String BLOG_ID = "4604026761903363296";
     private final HttpTransport HTTP_TRANSPORT;
     private final JsonFactory JSON_FACTORY;
 
     public ExecutePost() {
-        // Configure the Java API Client for Installed Native App
         HTTP_TRANSPORT = new NetHttpTransport();
         JSON_FACTORY = new JacksonFactory();
     }
-    
-    public void execute(Post content) throws Exception{
+
+    public void execute(Post content) throws Exception {
         try {
             List<String> scopes = Lists.newArrayList(BloggerScopes.BLOGGER);
-            Credential credential = Auth.authorize(scopes, "blogger");
-            
+            Credential credential = Auth.authorize(scopes, "blogger", "/client_secret.json");
+
             Blogger.Builder b = new Blogger.Builder(HTTP_TRANSPORT, JSON_FACTORY, credential);
-            b.setApplicationName("LSDinc-TestApp/0.1");
+            b.setApplicationName(Lazyblogger.APP_NAME);
             Blogger blogger = b.build();
 
-            // Construct a post to insert
-            //Post content = new Post();
-            //content.setTitle("A test post");
-            //content.setContent("With <code>HTML</code> content");
-
-            // The request action.
             Blogger.Posts.Insert postsInsertAction = blogger.posts().insert(BLOG_ID, content);
 
             postsInsertAction.setFields("author/displayName,content,published,title,url");

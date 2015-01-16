@@ -25,18 +25,10 @@ public class Auth {
     public static final JsonFactory JSON_FACTORY = new JacksonFactory();
     private static final String CREDENTIALS_DIRECTORY = ".oauth-credentials";
 
-    public static Credential authorize(List<String> scopes, String credentialDatastore) throws IOException {
+    public static Credential authorize(List<String> scopes, String credentialDatastore, String credStore) throws IOException {
 
         Reader clientSecretReader = new InputStreamReader(Auth.class.getResourceAsStream("/client_secret.json"));
         GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY, clientSecretReader);
-
-        if (clientSecrets.getDetails().getClientId().startsWith("Enter")
-                || clientSecrets.getDetails().getClientSecret().startsWith("Enter ")) {
-            System.out.println(
-                    "Enter Client ID and Secret"
-                            + "into src/main/resources/client_secrets.json");
-            System.exit(1);
-        }
 
         // This creates the credentials datastore at ~/.oauth-credentials/${credentialDatastore}
         FileDataStoreFactory fileDataStoreFactory = new FileDataStoreFactory(new File(System.getProperty("user.home") + "/" + CREDENTIALS_DIRECTORY));
@@ -53,4 +45,3 @@ public class Auth {
         return new AuthorizationCodeInstalledApp(flow, localReceiver).authorize("user");
     }
 }
-
